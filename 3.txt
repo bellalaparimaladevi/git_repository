@@ -1,110 +1,88 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
+import { Component } from '@angular/core';
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-}
+@Component({
+  selector: 'app-job-listings',
+  templateUrl: './job-listings.component.html',
+  styleUrls: ['./job-listings.component.css']
+})
+export class JobListingsComponent {
 
-.container {
-    display: flex;
-    max-width: 900px;
-    width: 100%;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+  // Extended job data with more job listings
+  jobs = [
+    {
+      title: 'Software Developer',
+      type: 'Full-Time',
+      role: 'Backend Developer',
+      description: 'Responsible for building scalable web applications and maintaining the server-side infrastructure.',
+      package: '$80,000 - $120,000 per year'
+    },
+    {
+      title: 'UX/UI Designer',
+      type: 'Contract',
+      role: 'Design Specialist',
+      description: 'Craft user-friendly interfaces and deliver exceptional user experiences for our products.',
+      package: '$60,000 - $90,000 per year'
+    },
+    {
+      title: 'Project Manager',
+      type: 'Full-Time',
+      role: 'Lead Project Manager',
+      description: 'Oversee project delivery and ensure the team meets deadlines.',
+      package: '$90,000 - $130,000 per year'
+    },
+    {
+      title: 'Data Scientist',
+      type: 'Full-Time',
+      role: 'Machine Learning Engineer',
+      description: 'Develop machine learning models and analyze large datasets to provide actionable insights.',
+      package: '$100,000 - $150,000 per year'
+    },
+    {
+      title: 'Mobile App Developer',
+      type: 'Full-Time',
+      role: 'Android/iOS Developer',
+      description: 'Design and develop mobile applications for both Android and iOS platforms.',
+      package: '$70,000 - $110,000 per year'
+    },
+    {
+      title: 'Cloud Engineer',
+      type: 'Full-Time',
+      role: 'Cloud Infrastructure Specialist',
+      description: 'Manage and optimize cloud infrastructure for our web services and platforms.',
+      package: '$95,000 - $140,000 per year'
+    },
+    {
+      title: 'DevOps Engineer',
+      type: 'Full-Time',
+      role: 'DevOps Specialist',
+      description: 'Implement CI/CD pipelines and optimize deployment strategies for web applications.',
+      package: '$85,000 - $130,000 per year'
+    },
+    {
+      title: 'Technical Writer',
+      type: 'Part-Time',
+      role: 'Content Specialist',
+      description: 'Create technical documentation, manuals, and guides for our software products.',
+      package: '$40,000 - $70,000 per year'
+    },
+    {
+      title: 'Marketing Specialist',
+      type: 'Full-Time',
+      role: 'Digital Marketing',
+      description: 'Drive marketing campaigns, social media strategies, and brand promotion.',
+      package: '$50,000 - $90,000 per year'
+    },
+    {
+      title: 'Sales Manager',
+      type: 'Full-Time',
+      role: 'Sales and Business Development',
+      description: 'Manage sales strategies and lead a team to drive revenue growth and client acquisition.',
+      package: '$60,000 - $100,000 per year'
+    }
+  ];
 
-.info {
-    flex: 1;
-    background-color: #2c3e50;
-    color: white;
-    padding: 40px;
-}
-
-.info h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-}
-
-.info p {
-    font-size: 18px;
-    line-height: 1.5;
-}
-
-.forms {
-    flex: 1;
-    padding: 40px;
-}
-
-.tab {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.tab button {
-    background-color: #ddd;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.tab button.active {
-    background-color: #2c3e50;
-    color: white;
-}
-
-.tabcontent {
-    display: none;
-}
-
-.tabcontent form {
-    display: flex;
-    flex-direction: column;
-}
-
-.tabcontent label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.tabcontent input {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.tabcontent button {
-    padding: 10px;
-    background-color: #2c3e50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.tabcontent button:hover {
-    background-color: #34495e;
-}
-
-.tabcontent p {
-    margin-top: 10px;
-}
-
-.tabcontent a {
-    color: #2980b9;
-    text-decoration: none;
-}
-
-.tabcontent a:hover {
-    text-decoration: underline;
+  // Function to handle applying for a job
+  apply(jobTitle: string) {
+    alert(`Applying for ${jobTitle}`);
+  }
 }
