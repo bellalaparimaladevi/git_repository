@@ -1,94 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Registration</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <div class="info">
-            <h1>Welcome to Our Website</h1>
-            <p>We offer services for both users and employees. Please log in or register to access the platform.</p>
-        </div>
+/* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        <div class="forms">
-            <div class="tab">
-                <button class="tablinks" onclick="openForm(event, 'UserLogin')" id="defaultOpen">User Login</button>
-                <button class="tablinks" onclick="openForm(event, 'EmployeeLogin')">Employee Login</button>
-            </div>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
 
-            <!-- User Login Form -->
-            <div id="UserLogin" class="tabcontent">
-                <h2>User Login</h2>
-                <form>
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                    <button type="submit">Login</button>
-                </form>
-                <p>Don't have an account? <a href="#user-register" onclick="openForm(event, 'UserRegister')">Register here</a>.</p>
-            </div>
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
 
-            <!-- Employee Login Form -->
-            <div id="EmployeeLogin" class="tabcontent">
-                <h2>Employee Login</h2>
-                <form>
-                    <label for="emp-username">Username</label>
-                    <input type="text" id="emp-username" name="emp-username" required>
-                    <label for="emp-password">Password</label>
-                    <input type="password" id="emp-password" name="emp-password" required>
-                    <button type="submit">Login</button>
-                </form>
-                <p>Don't have an account? <a href="#employee-register" onclick="openForm(event, 'EmployeeRegister')">Register here</a>.</p>
-            </div>
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #333;
+}
 
-            <!-- User Registration Form -->
-            <div id="UserRegister" class="tabcontent">
-                <h2>User Registration</h2>
-                <form>
-                    <label for="new-username">Username</label>
-                    <input type="text" id="new-username" name="new-username" required>
-                    <label for="new-password">Password</label>
-                    <input type="password" id="new-password" name="new-password" required>
-                    <button type="submit">Register</button>
-                </form>
-                <p>Already have an account? <a href="#user-login" onclick="openForm(event, 'UserLogin')">Login here</a>.</p>
-            </div>
+/* Jobs grid layout */
+.jobs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 
-            <!-- Employee Registration Form -->
-            <div id="EmployeeRegister" class="tabcontent">
-                <h2>Employee Registration</h2>
-                <form>
-                    <label for="new-emp-username">Username</label>
-                    <input type="text" id="new-emp-username" name="new-emp-username" required>
-                    <label for="new-emp-password">Password</label>
-                    <input type="password" id="new-emp-password" name="new-emp-password" required>
-                    <button type="submit">Register</button>
-                </form>
-                <p>Already have an account? <a href="#employee-login" onclick="openForm(event, 'EmployeeLogin')">Login here</a>.</p>
-            </div>
-        </div>
-    </div>
+/* Individual job card styles */
+.job-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin: 20px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    <script>
-        function openForm(evt, formName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(formName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
+.job-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
 
-        document.getElementById("defaultOpen").click();
-    </script>
-</body>
-</html>
+.job-card h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.job-card p {
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.job-card p strong {
+  color: #333;
+}
+
+/* Apply button styles */
+.apply-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.apply-btn:hover {
+  background-color: #218838;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .jobs {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .job-card {
+    width: 90%;
+  }
+}
