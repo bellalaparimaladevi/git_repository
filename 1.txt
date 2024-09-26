@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { UserService } from './user.service'; // Import your user service
-import { JobService } from './job.service'; // Import the job service
+import { UserService } from './user.service'; // Import the service
 
 @Component({
   selector: 'app-user-registration',
@@ -9,20 +8,15 @@ import { JobService } from './job.service'; // Import the job service
   styleUrls: ['./user-registration.component.css']
 })
 export class UserRegistrationComponent implements OnInit {
-  userForm: FormGroup; // Form for user registration
-  jobs: any[] = []; // Array to hold job details
-  jobdetails_jobid: number; // To hold the selected job ID
-  message: string; // For success/error messages
 
-  constructor(private userService: UserService, private jobService: JobService) {}
+  userForm: FormGroup;
+  jobs: any[] = [];
+  jobdetails_jobid: number | null = null;
+  message: string = '';
+
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    // Fetch jobs when the component initializes
-    this.jobService.getJobs().subscribe(data => {
-      this.jobs = data; // Store fetched job data
-    });
-
-    // Initialize the user registration form controls
     this.userForm = new FormGroup({
       username: new FormControl(''),
       useremail: new FormControl(''),
@@ -31,31 +25,34 @@ export class UserRegistrationComponent implements OnInit {
       userskills: new FormControl(''),
       status: new FormControl('')
     });
+
+    this.loadJobs();
   }
 
-  // Method to handle job selection
-  onJobSelect(jobId: number): void {
-    this.jobdetails_jobid = jobId; // Set the selected job ID
+  loadJobs(): void {
+    this.userService.getJobs().subscribe(
+      data => { this.jobs = data || []; },
+      error => { console.error('Failed to load jobs', error); }
+    );
   }
 
-  // Method to submit the user registration form
   submitUser(): void {
-    const formData = this.userForm.value; // Get form data
+    if (!this.jobdetails_jobid) {
+      this.message = 'Please select a job!';
+      return;
+    }
 
-    // Prepare the user data to include the selected job ID
     const userData = {
-      ...formData,
-      jobdetails_jobid: this.jobdetails_jobid // Include the selected job ID
+      ...this.userForm.value,
+      jobdetails_jobid: this.jobdetails_jobid
     };
 
-    // Call the user service to register the user
     this.userService.registerUser(userData).subscribe(
       response => {
         this.message = 'User registered successfully!';
-        console.log('Success:', response);
       },
       error => {
-        this.message = 'Registration failed';
+        this.message = 'Failed to register user.';
         console.error('Error:', error);
       }
     );
