@@ -1,92 +1,29 @@
-/* Global styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<form [formGroup]="userForm" (ngSubmit)="submitUser()">
+  <label for="job">Select Job:</label>
+  <select (change)="onJobSelect($event.target.value)">
+    <option value="">-- Select a Job --</option>
+    <option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</option>
+  </select>
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-}
+  <label for="username">Username:</label>
+  <input type="text" formControlName="username" required>
 
-.container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-}
+  <label for="useremail">Email:</label>
+  <input type="email" formControlName="useremail" required>
 
-h1 {
-  text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-}
+  <label for="usermobile">Mobile:</label>
+  <input type="text" formControlName="usermobile" required>
 
-/* Jobs grid layout */
-.jobs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
+  <label for="userpassword">Password:</label>
+  <input type="password" formControlName="userpassword" required>
 
-/* Individual job card styles */
-.job-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 300px;
-  margin: 20px;
-  padding: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+  <label for="userskills">Skills:</label>
+  <input type="text" formControlName="userskills" required>
 
-.job-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
+  <label for="status">Status:</label>
+  <input type="text" formControlName="status" required>
 
-.job-card h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  color: #444;
-}
+  <button type="submit">Register</button>
+</form>
 
-.job-card p {
-  margin-bottom: 10px;
-  color: #666;
-}
-
-.job-card p strong {
-  color: #333;
-}
-
-/* Apply button styles */
-.apply-btn {
-  background-color: #28a745;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 16px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-.apply-btn:hover {
-  background-color: #218838;
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .jobs {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .job-card {
-    width: 90%;
-  }
-}
+<p *ngIf="message">{{ message }}</p>
