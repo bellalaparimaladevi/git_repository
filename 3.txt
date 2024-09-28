@@ -1,88 +1,44 @@
-import { Component } from '@angular/core';
+<!-- apply.component.html -->
+<form [formGroup]="applyForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="useremail">Email:</label>
+    <input id="useremail" formControlName="useremail" type="email" />
+    <div *ngIf="applyForm.controls['useremail'].invalid && applyForm.controls['useremail'].touched">
+      Please enter a valid email.
+    </div>
+  </div>
 
-@Component({
-  selector: 'app-job-listings',
-  templateUrl: './job-listings.component.html',
-  styleUrls: ['./job-listings.component.css']
-})
-export class JobListingsComponent {
+  <div>
+    <label for="usermobile">Mobile:</label>
+    <input id="usermobile" formControlName="usermobile" type="text" />
+    <div *ngIf="applyForm.controls['usermobile'].invalid && applyForm.controls['usermobile'].touched">
+      Please enter a valid mobile number.
+    </div>
+  </div>
 
-  // Extended job data with more job listings
-  jobs = [
-    {
-      title: 'Software Developer',
-      type: 'Full-Time',
-      role: 'Backend Developer',
-      description: 'Responsible for building scalable web applications and maintaining the server-side infrastructure.',
-      package: '$80,000 - $120,000 per year'
-    },
-    {
-      title: 'UX/UI Designer',
-      type: 'Contract',
-      role: 'Design Specialist',
-      description: 'Craft user-friendly interfaces and deliver exceptional user experiences for our products.',
-      package: '$60,000 - $90,000 per year'
-    },
-    {
-      title: 'Project Manager',
-      type: 'Full-Time',
-      role: 'Lead Project Manager',
-      description: 'Oversee project delivery and ensure the team meets deadlines.',
-      package: '$90,000 - $130,000 per year'
-    },
-    {
-      title: 'Data Scientist',
-      type: 'Full-Time',
-      role: 'Machine Learning Engineer',
-      description: 'Develop machine learning models and analyze large datasets to provide actionable insights.',
-      package: '$100,000 - $150,000 per year'
-    },
-    {
-      title: 'Mobile App Developer',
-      type: 'Full-Time',
-      role: 'Android/iOS Developer',
-      description: 'Design and develop mobile applications for both Android and iOS platforms.',
-      package: '$70,000 - $110,000 per year'
-    },
-    {
-      title: 'Cloud Engineer',
-      type: 'Full-Time',
-      role: 'Cloud Infrastructure Specialist',
-      description: 'Manage and optimize cloud infrastructure for our web services and platforms.',
-      package: '$95,000 - $140,000 per year'
-    },
-    {
-      title: 'DevOps Engineer',
-      type: 'Full-Time',
-      role: 'DevOps Specialist',
-      description: 'Implement CI/CD pipelines and optimize deployment strategies for web applications.',
-      package: '$85,000 - $130,000 per year'
-    },
-    {
-      title: 'Technical Writer',
-      type: 'Part-Time',
-      role: 'Content Specialist',
-      description: 'Create technical documentation, manuals, and guides for our software products.',
-      package: '$40,000 - $70,000 per year'
-    },
-    {
-      title: 'Marketing Specialist',
-      type: 'Full-Time',
-      role: 'Digital Marketing',
-      description: 'Drive marketing campaigns, social media strategies, and brand promotion.',
-      package: '$50,000 - $90,000 per year'
-    },
-    {
-      title: 'Sales Manager',
-      type: 'Full-Time',
-      role: 'Sales and Business Development',
-      description: 'Manage sales strategies and lead a team to drive revenue growth and client acquisition.',
-      package: '$60,000 - $100,000 per year'
-    }
-  ];
+  <div>
+    <label for="username">Name:</label>
+    <input id="username" formControlName="username" type="text" />
+    <div *ngIf="applyForm.controls['username'].invalid && applyForm.controls['username'].touched">
+      Please enter your name.
+    </div>
+  </div>
 
-  // Function to handle applying for a job
-  apply(jobTitle: string) {
-    alert(`Applying for ${jobTitle}`);
-  }
-}
+  <div>
+    <label for="userpassword">Password:</label>
+    <input id="userpassword" formControlName="userpassword" type="password" />
+    <div *ngIf="applyForm.controls['userpassword'].invalid && applyForm.controls['userpassword'].touched">
+      Please enter your password.
+    </div>
+  </div>
+
+  <div>
+    <label for="userskills">Skills:</label>
+    <input id="userskills" formControlName="userskills" type="text" />
+    <div *ngIf="applyForm.controls['userskills'].invalid && applyForm.controls['userskills'].touched">
+      Please enter your skills.
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="applyForm.invalid">Submit</button>
+</form>
