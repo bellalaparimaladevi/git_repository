@@ -1,60 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { UserService } from './user.service'; // Import the service
+<div class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="userEmail">Email:</label>
+      <input type="email" id="userEmail" formControlName="userEmail" required />
+      <div *ngIf="loginForm.controls['userEmail'].invalid && loginForm.controls['userEmail'].touched">
+        <small *ngIf="loginForm.controls['userEmail'].errors?.required">Email is required.</small>
+        <small *ngIf="loginForm.controls['userEmail'].errors?.email">Invalid email format.</small>
+      </div>
+    </div>
 
-@Component({
-  selector: 'app-user-registration',
-  templateUrl: './user-registration.component.html',
-  styleUrls: ['./user-registration.component.css']
-})
-export class UserRegistrationComponent implements OnInit {
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" formControlName="password" required />
+      <div *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
+        <small *ngIf="loginForm.controls['password'].errors?.required">Password is required.</small>
+      </div>
+    </div>
 
-  userForm: FormGroup;
-  jobs: any[] = [];
-  jobdetails_jobid: number | null = null;
-  message: string = '';
-
-  constructor(private userService: UserService) {}
-
-  ngOnInit(): void {
-    this.userForm = new FormGroup({
-      username: new FormControl(''),
-      useremail: new FormControl(''),
-      usermobile: new FormControl(''),
-      userpassword: new FormControl(''),
-      userskills: new FormControl(''),
-      status: new FormControl('')
-    });
-
-    this.loadJobs();
-  }
-
-  loadJobs(): void {
-    this.userService.getJobs().subscribe(
-      data => { this.jobs = data || []; },
-      error => { console.error('Failed to load jobs', error); }
-    );
-  }
-
-  submitUser(): void {
-    if (!this.jobdetails_jobid) {
-      this.message = 'Please select a job!';
-      return;
-    }
-
-    const userData = {
-      ...this.userForm.value,
-      jobdetails_jobid: this.jobdetails_jobid
-    };
-
-    this.userService.registerUser(userData).subscribe(
-      response => {
-        this.message = 'User registered successfully!';
-      },
-      error => {
-        this.message = 'Failed to register user.';
-        console.error('Error:', error);
-      }
-    );
-  }
-}
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  </form>
+</div>
