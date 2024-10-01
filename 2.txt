@@ -1,29 +1,53 @@
-<form [formGroup]="userForm" (ngSubmit)="submitUser()">
-  <label for="job">Select Job:</label>
-  <select (change)="onJobSelect($event.target.value)">
-    <option value="">-- Select a Job --</option>
-    <option *ngFor="let job of jobs" [value]="job.id">{{ job.title }}</option>
-  </select>
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service'; // Ensure to create and import the AuthService
 
-  <label for="username">Username:</label>
-  <input type="text" formControlName="username" required>
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'] // Add your CSS styles here
+})
+export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
+  errorMessage: string | null = null;
 
-  <label for="useremail">Email:</label>
-  <input type="email" formControlName="useremail" required>
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.formBuilder.group({
+      userEmail: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
+  }
 
-  <label for="usermobile">Mobile:</label>
-  <input type="text" formControlName="usermobile" required>
+  ngOnInit(): void {
+    // Optionally, check if the user is already logged in and redirect
+    if (localStorage.getItem('token')) {
+      this.router.navigate(['/dashboard']); // Redirect to dashboard if already logged in
+    }
+  }
 
-  <label for="userpassword">Password:</label>
-  <input type="password" formControlName="userpassword" required>
+  onSubmit() {
+    if (this.loginForm.invalid) {
+      return;
+    }
 
-  <label for="userskills">Skills:</label>
-  <input type="text" formControlName="userskills" required>
+    const loginData = this.loginForm.value; // Using plain object instead of DTO
 
-  <label for="status">Status:</label>
-  <input type="text" formControlName="status" required>
-
-  <button type="submit">Register</button>
-</form>
-
-<p *ngIf="message">{{ message }}</p>
+    this.authService.login(loginData).subscribe({
+      next: (response) => { // No DTO type here
+        // Store the token in localStorage
+        localStorage.setItem('token', response.token);
+        // Navigate to the dashboard or protected route
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        this.errorMessage = 'Invalid email or password';
+        console.error('Login error', error);
+      }
+    });
+  }
+}
