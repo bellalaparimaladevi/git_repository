@@ -1,44 +1,16 @@
-<!-- apply.component.html -->
-<form [formGroup]="applyForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="useremail">Email:</label>
-    <input id="useremail" formControlName="useremail" type="email" />
-    <div *ngIf="applyForm.controls['useremail'].invalid && applyForm.controls['useremail'].touched">
-      Please enter a valid email.
-    </div>
-  </div>
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-  <div>
-    <label for="usermobile">Mobile:</label>
-    <input id="usermobile" formControlName="usermobile" type="text" />
-    <div *ngIf="applyForm.controls['usermobile'].invalid && applyForm.controls['usermobile'].touched">
-      Please enter a valid mobile number.
-    </div>
-  </div>
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private baseUrl = 'http://localhost:8080'; // Change this to your backend base URL
 
-  <div>
-    <label for="username">Name:</label>
-    <input id="username" formControlName="username" type="text" />
-    <div *ngIf="applyForm.controls['username'].invalid && applyForm.controls['username'].touched">
-      Please enter your name.
-    </div>
-  </div>
+  constructor(private http: HttpClient) {}
 
-  <div>
-    <label for="userpassword">Password:</label>
-    <input id="userpassword" formControlName="userpassword" type="password" />
-    <div *ngIf="applyForm.controls['userpassword'].invalid && applyForm.controls['userpassword'].touched">
-      Please enter your password.
-    </div>
-  </div>
-
-  <div>
-    <label for="userskills">Skills:</label>
-    <input id="userskills" formControlName="userskills" type="text" />
-    <div *ngIf="applyForm.controls['userskills'].invalid && applyForm.controls['userskills'].touched">
-      Please enter your skills.
-    </div>
-  </div>
-
-  <button type="submit" [disabled]="applyForm.invalid">Submit</button>
-</form>
+  login(loginData: { userEmail: string; password: string }): Observable<any> { // Using plain object here
+    return this.http.post<any>(`${this.baseUrl}/authenticate`, loginData);
+  }
+}
