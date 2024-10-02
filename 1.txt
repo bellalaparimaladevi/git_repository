@@ -1,24 +1,102 @@
-<div class="login-container">
-  <h2>Login</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <div>
-      <label for="userEmail">Email:</label>
-      <input type="email" id="userEmail" formControlName="userEmail" required />
-      <div *ngIf="loginForm.controls['userEmail'].invalid && loginForm.controls['userEmail'].touched">
-        <small *ngIf="loginForm.controls['userEmail'].errors?.required">Email is required.</small>
-        <small *ngIf="loginForm.controls['userEmail'].errors?.email">Invalid email format.</small>
-      </div>
-    </div>
+package yg.bootcamp.demo.userdetails;
 
-    <div>
-      <label for="password">Password:</label>
-      <input type="password" id="password" formControlName="password" required />
-      <div *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
-        <small *ngIf="loginForm.controls['password'].errors?.required">Password is required.</small>
-      </div>
-    </div>
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import java.util.Optional;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-    <button type="submit" [disabled]="loginForm.invalid">Login</button>
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-  </form>
-</div>
+class UserDetailsServiceTest {
+
+    @InjectMocks
+    private UserDetailsService userDetailsService;
+
+    @Mock
+    private UserDetailsRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    // Test: getAllUserDetails
+    @Test
+    void testGetAllUserDetails() {
+        // Arrange
+        Iterable<UserDetails> mockUserDetails = mock(Iterable.class);
+        when(userRepository.findAll()).thenReturn(mockUserDetails);
+
+        // Act
+        Iterable<UserDetails> result = userDetailsService.getAllUserDetails();
+
+        // Assert
+        assertNotNull(result);
+        verify(userRepository, times(1)).findAll();
+    }
+
+    // Test: addNewUserDetail
+    @Test
+    void testAddNewUserDetail() {
+        // Arrange
+        UserDetails user = new UserDetails();
+        doNothing().when(userRepository).save(user);
+
+        // Act
+        userDetailsService.addNewUserDetail(user);
+
+        // Assert
+        verify(userRepository, times(1)).save(user);
+    }
+
+    // Test: updateUserStatus
+    @Test
+    void testUpdateUserStatus() {
+        // Arrange
+        UserDetails mockUser = new UserDetails();
+        mockUser.setStatus("pending");
+
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(mockUser));
+        when(userRepository.save(any(UserDetails.class))).thenReturn(mockUser);
+
+        // Act
+        UserDetails updatedUser = userDetailsService.updateUserStatus(1, "applied");
+
+        // Assert
+        assertNotNull(updatedUser);
+        assertEquals("applied", updatedUser.getStatus());
+        verify(userRepository, times(1)).findById(1);
+        verify(userRepository, times(1)).save(mockUser);
+    }
+
+    // Test: getAllUsersByJobdetailsJobId
+    @Test
+    void testGetAllUsersByJobdetailsJobId() {
+        // Arrange
+        List<UserDetails> mockUserList = mock(List.class);
+        when(userRepository.findByjobdetails_jobid(anyInt())).thenReturn(mockUserList);
+
+        // Act
+        List<UserDetails> result = userDetailsService.getAllUsersByjobdetails_jobid(1);
+
+        // Assert
+        assertNotNull(result);
+        verify(userRepository, times(1)).findByjobdetails_jobid(1);
+    }
+
+    // Test: addNewUserByJobId
+    @Test
+    void testAddNewUserByJobId() {
+        // Arrange
+        UserDetails user = new UserDetails();
+        doNothing().when(userRepository).save(user);
+
+        // Act
+        userDetailsService.addNewUserbyJobId(user);
+
+        // Assert
+        verify(userRepository, times(1)).save(user);
+    }
+}
