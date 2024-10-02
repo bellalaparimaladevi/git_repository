@@ -1,36 +1,90 @@
-/* job-list.component.css */
-.job-card-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
+package yg.bootcamp.demo.userregistration;
 
-.job-card {
-  width: 300px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-.job-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
+class UserRegistrationServiceTest {
 
-.apply-button {
-  margin-top: 10px;
-  padding: 10px 15px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
+    @Mock
+    private UserRegistrationRepository userrepository;
 
-.apply-button:hover {
-  background-color: #218838;
+    @InjectMocks
+    private UserRegistrationService userRegistrationService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    // Test for getAllUsersRegistered()
+    @Test
+    void testGetAllUsersRegistered() {
+        Iterable<UserRegistration> userList = mock(Iterable.class);  // Mocking the Iterable result
+
+        // Mock repository behavior
+        when(userrepository.findAll()).thenReturn(userList);
+
+        // Call the service method
+        Iterable<UserRegistration> result = userRegistrationService.getAllUsersRegistered();
+
+        // Verify and assert the result
+        verify(userrepository, times(1)).findAll();
+        assertNotNull(result);
+        assertEquals(userList, result);
+    }
+
+    // Test for addNewUsersRegistered()
+    @Test
+    void testAddNewUsersRegistered() {
+        UserRegistration userRegistration = new UserRegistration(); // Create a test object
+
+        // Mock repository behavior for save()
+        when(userrepository.save(userRegistration)).thenReturn(userRegistration);
+
+        // Call the service method
+        userRegistrationService.addNewUsersRegistered(userRegistration);
+
+        // Verify that the save method is called once
+        verify(userrepository, times(1)).save(userRegistration);
+    }
+
+    // Test for getUserRegisteredByEmail()
+    @Test
+    void testGetUserRegisteredByEmail() {
+        String userEmail = "test@example.com";
+        Optional<UserRegistration> optionalUser = Optional.of(new UserRegistration()); // Create a test object
+
+        // Mock repository behavior for findByUseremail()
+        when(userrepository.findByUseremail(userEmail)).thenReturn(optionalUser);
+
+        // Call the service method
+        Optional<UserRegistration> result = userRegistrationService.getUserRegisteredByEmail(userEmail);
+
+        // Verify and assert the result
+        verify(userrepository, times(1)).findByUseremail(userEmail);
+        assertTrue(result.isPresent());
+        assertEquals(optionalUser, result);
+    }
+
+    // Test case where the user is not found
+    @Test
+    void testGetUserRegisteredByEmail_UserNotFound() {
+        String userEmail = "nonexistent@example.com";
+
+        // Mock repository behavior for user not found
+        when(userrepository.findByUseremail(userEmail)).thenReturn(Optional.empty());
+
+        // Call the service method
+        Optional<UserRegistration> result = userRegistrationService.getUserRegisteredByEmail(userEmail);
+
+        // Verify and assert the result
+        verify(userrepository, times(1)).findByUseremail(userEmail);
+        assertFalse(result.isPresent());
+    }
 }
