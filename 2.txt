@@ -1,53 +1,109 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth.service'; // Ensure to create and import the AuthService
+package yg.bootcamp.demo.jobdetails;
 
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'] // Add your CSS styles here
-})
-export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
-  errorMessage: string | null = null;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.loginForm = this.formBuilder.group({
-      userEmail: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
-    });
-  }
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-  ngOnInit(): void {
-    // Optionally, check if the user is already logged in and redirect
-    if (localStorage.getItem('token')) {
-      this.router.navigate(['/dashboard']); // Redirect to dashboard if already logged in
-    }
-  }
+import java.util.Arrays;
+import java.util.Optional;
 
-  onSubmit() {
-    if (this.loginForm.invalid) {
-      return;
+public class JobDetailsServiceTest {
+
+    @Mock
+    private JobDetailsRepository repository;
+
+    @InjectMocks
+    private JobDetailsService jobDetailsService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
-    const loginData = this.loginForm.value; // Using plain object instead of DTO
+    @Test
+    void testGetAllJobDetails() {
+        JobDetails job1 = new JobDetails(); // Initialize with required fields
+        JobDetails job2 = new JobDetails(); // Initialize with required fields
+        when(repository.findAll()).thenReturn(Arrays.asList(job1, job2));
 
-    this.authService.login(loginData).subscribe({
-      next: (response) => { // No DTO type here
-        // Store the token in localStorage
-        localStorage.setItem('token', response.token);
-        // Navigate to the dashboard or protected route
-        this.router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        this.errorMessage = 'Invalid email or password';
-        console.error('Login error', error);
-      }
-    });
-  }
+        Iterable<JobDetails> jobDetails = jobDetailsService.getAllJobDetails();
+
+        assertNotNull(jobDetails);
+        assertEquals(2, ((List<JobDetails>) jobDetails).size());
+        verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    void testAddNewJobDetail() {
+        JobDetails jobDetails = new JobDetails(); // Initialize with required fields
+        doNothing().when(repository).save(jobDetails);
+
+        jobDetailsService.addNewJobDetail(jobDetails);
+
+        verify(repository, times(1)).save(jobDetails);
+    }
+
+    @Test
+    void testDeleteJobDetailsById() {
+        Integer id = 1; // Sample ID
+        doNothing().when(repository).deleteById(id);
+
+        jobDetailsService.deleteJobDetailsById(id);
+
+        verify(repository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testGetJobDetailsByJobType() {
+        String jobType = "Developer"; // Sample job type
+        JobDetails job = new JobDetails(); // Initialize with required fields
+        when(repository.findByJobtypeIgnoreCase(jobType)).thenReturn(Arrays.asList(job));
+
+        List<JobDetails> result = jobDetailsService.getJobDetailsByJobType(jobType);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(repository, times(1)).findByJobtypeIgnoreCase(jobType);
+    }
+
+    @Test
+    void testGetJobDetailsByJobRole() {
+        String jobRole = "Backend"; // Sample job role
+        JobDetails job = new JobDetails(); // Initialize with required fields
+        when(repository.findByJobroleIgnoreCase(jobRole)).thenReturn(Arrays.asList(job));
+
+        List<JobDetails> result = jobDetailsService.getJobDetailsByJobRole(jobRole);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(repository, times(1)).findByJobroleIgnoreCase(jobRole);
+    }
+
+    @Test
+    void testUpdateJobDetailsById() {
+        JobDetails jobDetails = new JobDetails(); // Initialize with required fields
+        doNothing().when(repository).save(jobDetails);
+
+        jobDetailsService.updateJobDetailsById(jobDetails);
+
+        verify(repository, times(1)).save(jobDetails);
+    }
+
+    @Test
+    void testGetJobDetailsById() {
+        Integer id = 1; // Sample ID
+        JobDetails job = new JobDetails(); // Initialize with required fields
+        when(repository.findById(id)).thenReturn(Optional.of(job));
+
+        Optional<JobDetails> result = jobDetailsService.getJobDetailsById(id);
+
+        assertTrue(result.isPresent());
+        assertEquals(job, result.get());
+        verify(repository, times(1)).findById(id);
+    }
 }
