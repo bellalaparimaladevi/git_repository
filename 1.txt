@@ -1,102 +1,57 @@
-package yg.bootcamp.demo.userdetails;
+<dependencies>
+    <!-- JUnit 5 dependency -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.0</version>
+        <scope>test</scope>
+    </dependency>
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import java.util.Optional;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.9.0</version>
+        <scope>test</scope>
+    </dependency>
 
-class UserDetailsServiceTest {
+    <!-- Mockito dependency for mocking objects -->
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>4.0.0</version>
+        <scope>test</scope>
+    </dependency>
 
-    @InjectMocks
-    private UserDetailsService userDetailsService;
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>4.0.0</version>
+        <scope>test</scope>
+    </dependency>
 
-    @Mock
-    private UserDetailsRepository userRepository;
+    <!-- Spring Boot Test dependency for integration and unit tests -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+        <exclusions>
+            <!-- Excluding JUnit 4 since we are using JUnit 5 -->
+            <exclusion>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    // Test: getAllUserDetails
-    @Test
-    void testGetAllUserDetails() {
-        // Arrange
-        Iterable<UserDetails> mockUserDetails = mock(Iterable.class);
-        when(userRepository.findAll()).thenReturn(mockUserDetails);
-
-        // Act
-        Iterable<UserDetails> result = userDetailsService.getAllUserDetails();
-
-        // Assert
-        assertNotNull(result);
-        verify(userRepository, times(1)).findAll();
-    }
-
-    // Test: addNewUserDetail
-    @Test
-    void testAddNewUserDetail() {
-        // Arrange
-        UserDetails user = new UserDetails();
-        doNothing().when(userRepository).save(user);
-
-        // Act
-        userDetailsService.addNewUserDetail(user);
-
-        // Assert
-        verify(userRepository, times(1)).save(user);
-    }
-
-    // Test: updateUserStatus
-    @Test
-    void testUpdateUserStatus() {
-        // Arrange
-        UserDetails mockUser = new UserDetails();
-        mockUser.setStatus("pending");
-
-        when(userRepository.findById(anyInt())).thenReturn(Optional.of(mockUser));
-        when(userRepository.save(any(UserDetails.class))).thenReturn(mockUser);
-
-        // Act
-        UserDetails updatedUser = userDetailsService.updateUserStatus(1, "applied");
-
-        // Assert
-        assertNotNull(updatedUser);
-        assertEquals("applied", updatedUser.getStatus());
-        verify(userRepository, times(1)).findById(1);
-        verify(userRepository, times(1)).save(mockUser);
-    }
-
-    // Test: getAllUsersByJobdetailsJobId
-    @Test
-    void testGetAllUsersByJobdetailsJobId() {
-        // Arrange
-        List<UserDetails> mockUserList = mock(List.class);
-        when(userRepository.findByjobdetails_jobid(anyInt())).thenReturn(mockUserList);
-
-        // Act
-        List<UserDetails> result = userDetailsService.getAllUsersByjobdetails_jobid(1);
-
-        // Assert
-        assertNotNull(result);
-        verify(userRepository, times(1)).findByjobdetails_jobid(1);
-    }
-
-    // Test: addNewUserByJobId
-    @Test
-    void testAddNewUserByJobId() {
-        // Arrange
-        UserDetails user = new UserDetails();
-        doNothing().when(userRepository).save(user);
-
-        // Act
-        userDetailsService.addNewUserbyJobId(user);
-
-        // Assert
-        verify(userRepository, times(1)).save(user);
-    }
-}
+    <!-- Optional: Hamcrest for assertion matchers (can be useful for more expressive assertions) -->
+    <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest</artifactId>
+        <version>2.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
