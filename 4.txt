@@ -1,48 +1,4 @@
-package yg.bootcamp.demo.userregistration;
-
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-class UserRegistrationServiceTest {
-
-    @Mock
-    private UserRegistrationRepository userrepository;
-
-    @InjectMocks
-    private UserRegistrationService userRegistrationService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    // Test for getAllUsersRegistered()
-    @Test
-    void testGetAllUsersRegistered() {
-        Iterable<UserRegistration> userList = mock(Iterable.class);  // Mocking the Iterable result
-
-        // Mock repository behavior
-        when(userrepository.findAll()).thenReturn(userList);
-
-        // Call the service method
-        Iterable<UserRegistration> result = userRegistrationService.getAllUsersRegistered();
-
-        // Verify and assert the result
-        verify(userrepository, times(1)).findAll();
-        assertNotNull(result);
-        assertEquals(userList, result);
-    }
-
-    // Test for addNewUsersRegistered()
-    @Test
-    void testAddNewUsersRegistered() {
-        UserRegistration userRegistration = new UserRegistration(); // Create a test object
+userRegistration = new UserRegistration(); // Create a test object
 
         // Mock repository behavior for save()
         when(userrepository.save(userRegistration)).thenReturn(userRegistration);
