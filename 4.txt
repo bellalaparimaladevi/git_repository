@@ -1,46 +1,52 @@
-userRegistration = new UserRegistration(); // Create a test object
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-        // Mock repository behavior for save()
-        when(userrepository.save(userRegistration)).thenReturn(userRegistration);
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import yg.bootcamp.demo.employeedetails.EmployeeDetails;
+import yg.bootcamp.demo.employeedetails.EmployeeDetailsService;
 
-        // Call the service method
-        userRegistrationService.addNewUsersRegistered(userRegistration);
+import java.util.List;
 
-        // Verify that the save method is called once
-        verify(userrepository, times(1)).save(userRegistration);
+class EmployeeDetailsControllerTest {
+
+    @Mock
+    private EmployeeDetailsService service;
+
+    @InjectMocks
+    private EmployeeDetailsController controller;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
-    // Test for getUserRegisteredByEmail()
     @Test
-    void testGetUserRegisteredByEmail() {
-        String userEmail = "test@example.com";
-        Optional<UserRegistration> optionalUser = Optional.of(new UserRegistration()); // Create a test object
+    void testGetAllEmployeeDetails() {
+        // Given
+        List<EmployeeDetails> employeeDetailsList = List.of(new EmployeeDetails(), new EmployeeDetails());
+        when(service.getAllEmployeeDetails()).thenReturn(employeeDetailsList);
 
-        // Mock repository behavior for findByUseremail()
-        when(userrepository.findByUseremail(userEmail)).thenReturn(optionalUser);
+        // When
+        Iterable<EmployeeDetails> result = controller.getAllEmployeeDetails();
 
-        // Call the service method
-        Optional<UserRegistration> result = userRegistrationService.getUserRegisteredByEmail(userEmail);
-
-        // Verify and assert the result
-        verify(userrepository, times(1)).findByUseremail(userEmail);
-        assertTrue(result.isPresent());
-        assertEquals(optionalUser, result);
+        // Then
+        assertEquals(employeeDetailsList, result);
+        verify(service).getAllEmployeeDetails();
     }
 
-    // Test case where the user is not found
     @Test
-    void testGetUserRegisteredByEmail_UserNotFound() {
-        String userEmail = "nonexistent@example.com";
+    void testAddNewEmployeeDetails() {
+        // Given
+        EmployeeDetails employeeDetails = new EmployeeDetails();
 
-        // Mock repository behavior for user not found
-        when(userrepository.findByUseremail(userEmail)).thenReturn(Optional.empty());
+        // When
+        controller.addNewEmployeeDetails(employeeDetails);
 
-        // Call the service method
-        Optional<UserRegistration> result = userRegistrationService.getUserRegisteredByEmail(userEmail);
-
-        // Verify and assert the result
-        verify(userrepository, times(1)).findByUseremail(userEmail);
-        assertFalse(result.isPresent());
+        // Then
+        verify(service).addNewEmployeeDetails(employeeDetails);
     }
 }
