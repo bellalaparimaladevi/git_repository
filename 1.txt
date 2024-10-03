@@ -1,57 +1,67 @@
-<dependencies>
-    <!-- JUnit 5 dependency -->
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.0</version>
-        <scope>test</scope>
-    </dependency>
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.9.0</version>
-        <scope>test</scope>
-    </dependency>
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+import yg.bootcamp.demo.userdetails.UserDetails;
+import yg.bootcamp.demo.userdetails.UserDetailsService;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-    <!-- Mockito dependency for mocking objects -->
-    <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>4.0.0</version>
-        <scope>test</scope>
-    </dependency>
+class UserDetailsControllerTest {
 
-    <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-junit-jupiter</artifactId>
-        <version>4.0.0</version>
-        <scope>test</scope>
-    </dependency>
+    @Mock
+    private UserDetailsService service;
 
-    <!-- Spring Boot Test dependency for integration and unit tests -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
-        <exclusions>
-            <!-- Excluding JUnit 4 since we are using JUnit 5 -->
-            <exclusion>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
+    @InjectMocks
+    private UserDetailsController controller;
 
-    <!-- Optional: Hamcrest for assertion matchers (can be useful for more expressive assertions) -->
-    <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest</artifactId>
-        <version>2.2</version>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetAllUserDetails() {
+        // Given
+        List<UserDetails> userDetailsList = List.of(new UserDetails(), new UserDetails());
+        when(service.getAllUserDetails()).thenReturn(userDetailsList);
+
+        // When
+        Iterable<UserDetails> result = controller.getAllUserDetails();
+
+        // Then
+        assertEquals(userDetailsList, result);
+        verify(service).getAllUserDetails();
+    }
+
+    @Test
+    void testAddNewUserDetail() {
+        // Given
+        UserDetails userDetails = new UserDetails();
+
+        // When
+        controller.addNewUserDetail(userDetails);
+
+        // Then
+        verify(service).addNewUserDetail(userDetails);
+    }
+
+    @Test
+    void testUpdateUserStatus() {
+        // Given
+        Map<String, String> request = new HashMap<>();
+        request.put("status", "applied");
+        UserDetails updatedUser = new UserDetails();
+        when(service.updateUserStatus(1, "applied")).thenReturn(updatedUser);
+
+        // When
+        ResponseEntity<UserDetails> response = controller.updateUserStatus(1, request);
+
+        // Then
+        assertEquals(ResponseEntity.ok(updatedUser), response);
