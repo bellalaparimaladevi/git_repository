@@ -1,5 +1,3 @@
-package yg.bootcamp.demo.jobdetails;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,102 +6,63 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import yg.bootcamp.demo.userregistration.UserRegistration;
+import yg.bootcamp.demo.userregistration.UserRegistrationService;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-public class JobDetailsServiceTest {
+class UserRegistrationControllerTest {
 
     @Mock
-    private JobDetailsRepository repository;
+    private UserRegistrationService service;
 
     @InjectMocks
-    private JobDetailsService jobDetailsService;
+    private UserRegistrationController controller;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGetAllJobDetails() {
-        JobDetails job1 = new JobDetails(); // Initialize with required fields
-        JobDetails job2 = new JobDetails(); // Initialize with required fields
-        when(repository.findAll()).thenReturn(Arrays.asList(job1, job2));
+    void testGetAllUsersRegistered() {
+        // Given
+        List<UserRegistration> userRegistrationList = List.of(new UserRegistration(), new UserRegistration());
+        when(service.getAllUsersRegistered()).thenReturn(userRegistrationList);
 
-        Iterable<JobDetails> jobDetails = jobDetailsService.getAllJobDetails();
+        // When
+        Iterable<UserRegistration> result = controller.getAllUsersRegistered();
 
-        assertNotNull(jobDetails);
-        assertEquals(2, ((List<JobDetails>) jobDetails).size());
-        verify(repository, times(1)).findAll();
+        // Then
+        assertEquals(userRegistrationList, result);
+        verify(service).getAllUsersRegistered();
     }
 
     @Test
-    void testAddNewJobDetail() {
-        JobDetails jobDetails = new JobDetails(); // Initialize with required fields
-        doNothing().when(repository).save(jobDetails);
+    void testAddNewUserRegistered() {
+        // Given
+        UserRegistration userRegistration = new UserRegistration();
 
-        jobDetailsService.addNewJobDetail(jobDetails);
+        // When
+        controller.addNewUserRegistered(userRegistration);
 
-        verify(repository, times(1)).save(jobDetails);
+        // Then
+        verify(service).addNewUsersRegistered(userRegistration);
     }
 
     @Test
-    void testDeleteJobDetailsById() {
-        Integer id = 1; // Sample ID
-        doNothing().when(repository).deleteById(id);
+    void testGetUserRegisteredByEmail() {
+        // Given
+        UserRegistration userRegistration = new UserRegistration();
+        when(service.getUserRegisteredByEmail("test@example.com")).thenReturn(Optional.of(userRegistration));
 
-        jobDetailsService.deleteJobDetailsById(id);
+        // When
+        Optional<UserRegistration> result = controller.getUserRegisteredByEmail("test@example.com");
 
-        verify(repository, times(1)).deleteById(id);
-    }
-
-    @Test
-    void testGetJobDetailsByJobType() {
-        String jobType = "Developer"; // Sample job type
-        JobDetails job = new JobDetails(); // Initialize with required fields
-        when(repository.findByJobtypeIgnoreCase(jobType)).thenReturn(Arrays.asList(job));
-
-        List<JobDetails> result = jobDetailsService.getJobDetailsByJobType(jobType);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(repository, times(1)).findByJobtypeIgnoreCase(jobType);
-    }
-
-    @Test
-    void testGetJobDetailsByJobRole() {
-        String jobRole = "Backend"; // Sample job role
-        JobDetails job = new JobDetails(); // Initialize with required fields
-        when(repository.findByJobroleIgnoreCase(jobRole)).thenReturn(Arrays.asList(job));
-
-        List<JobDetails> result = jobDetailsService.getJobDetailsByJobRole(jobRole);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(repository, times(1)).findByJobroleIgnoreCase(jobRole);
-    }
-
-    @Test
-    void testUpdateJobDetailsById() {
-        JobDetails jobDetails = new JobDetails(); // Initialize with required fields
-        doNothing().when(repository).save(jobDetails);
-
-        jobDetailsService.updateJobDetailsById(jobDetails);
-
-        verify(repository, times(1)).save(jobDetails);
-    }
-
-    @Test
-    void testGetJobDetailsById() {
-        Integer id = 1; // Sample ID
-        JobDetails job = new JobDetails(); // Initialize with required fields
-        when(repository.findById(id)).thenReturn(Optional.of(job));
-
-        Optional<JobDetails> result = jobDetailsService.getJobDetailsById(id);
-
+        // Then
         assertTrue(result.isPresent());
-        assertEquals(job, result.get());
-        verify(repository, times(1)).findById(id);
+        assertEquals(userRegistration, result.get());
+        verify(service).getUserRegisteredByEmail("test@example.com");
     }
 }
