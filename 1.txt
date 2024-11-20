@@ -1,67 +1,78 @@
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import { Component, OnInit } from '@angular/core';
+import { PostRequestService } from './post-request.service';
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
-import yg.bootcamp.demo.userdetails.UserDetails;
-import yg.bootcamp.demo.userdetails.UserDetailsService;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  constructor(private postRequestService: PostRequestService) {}
 
-class UserDetailsControllerTest {
+  ngOnInit(): void {
+    const jsonPayload = {
+      Name: 'RR View',
+      IsOfficialReport: false,
+      FilterCartoExclusions: false,
+      OrConditions: [
+        {
+          FilterConditions: [
+            {
+              Condition: {
+                OperatorAxis: {
+                  Name: 'Position',
+                  Orientation: 'R',
+                  Category: 'Deal',
+                },
+                Operator: 'IN',
+                Values: ['LNB:4958177'],
+              },
+              Operator: 'AND',
+            },
+          ],
+        },
+      ],
+      Indicators: [
+        {
+          IndicatorName: 'PnL Explanation',
+          Period: 'DtD',
+          Source: 'IA3',
+          Path: ['PnL Explanation'],
+          TechIndicatorName: null,
+          Condition: null,
+          Measure: '',
+          Depth: 1,
+          IncludeAllDepths: false,
+        },
+      ],
+      DisplayedAxis: [
+        {
+          Name: 'Tech_DealID',
+          Orientation: 'R',
+          Category: 'Deal',
+        },
+      ],
+      Measures: ['ValueEquivalent'],
+      AsOfFilter: {
+        RelativeHighBound: 0,
+        RelativeLowBound: 0,
+        AsOfList: ['2024-11-14T00:00:00'],
+      },
+      Sort: null,
+      CacheActivation: null,
+      AnalyticalStructureTransposition: null,
+      CallerName: 'My-Metrics',
+      CallerVersion: '1.0.0',
+      ReadsUnprocessed: false,
+    };
 
-    @Mock
-    private UserDetailsService service;
-
-    @InjectMocks
-    private UserDetailsController controller;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void testGetAllUserDetails() {
-        // Given
-        List<UserDetails> userDetailsList = List.of(new UserDetails(), new UserDetails());
-        when(service.getAllUserDetails()).thenReturn(userDetailsList);
-
-        // When
-        Iterable<UserDetails> result = controller.getAllUserDetails();
-
-        // Then
-        assertEquals(userDetailsList, result);
-        verify(service).getAllUserDetails();
-    }
-
-    @Test
-    void testAddNewUserDetail() {
-        // Given
-        UserDetails userDetails = new UserDetails();
-
-        // When
-        controller.addNewUserDetail(userDetails);
-
-        // Then
-        verify(service).addNewUserDetail(userDetails);
-    }
-
-    @Test
-    void testUpdateUserStatus() {
-        // Given
-        Map<String, String> request = new HashMap<>();
-        request.put("status", "applied");
-        UserDetails updatedUser = new UserDetails();
-        when(service.updateUserStatus(1, "applied")).thenReturn(updatedUser);
-
-        // When
-        ResponseEntity<UserDetails> response = controller.updateUserStatus(1, request);
-
-        // Then
-        assertEquals(ResponseEntity.ok(updatedUser), response);
+    this.postRequestService.sendPostRequest(jsonPayload).subscribe(
+      (response) => {
+        console.log('Response:', response);
+      },
+      (error) => {
+        console.error('Error:', error);
+      }
+    );
+  }
+}
