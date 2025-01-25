@@ -1,63 +1,111 @@
-.search-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.search-bar {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.search-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.search-button:hover {
-  background-color: #0056b3;
-}
-
-.suggestions {
-  position: absolute;
-  top: 45px; /* Adjust based on your search bar height */
-  width: 100%;
-  border: 1px solid #ccc;
-  background: white;
-  z-index: 1000;
-  list-style: none;
-  padding: 0;
+/* Basic Reset for margins and paddings */
+* {
   margin: 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/* Container for the whole page */
+body {
+  font-family: Arial, sans-serif; /* Set a default font for the page */
+  background-color: #f4f4f4; /* Light background for the page */
+  padding: 20px; /* Add some padding around the page */
+}
+
+/* Heading Styling */
+h1 {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px; /* Space between the heading and the search box */
+}
+
+/* Container for the search bar and button */
+.search-container {
+  display: flex; /* Align search bar and button horizontally */
+  align-items: center; /* Center the items vertically */
+  justify-content: flex-start; /* Align to the left */
+  max-width: 600px; /* Limit the width of the search bar */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 10px;
+  background-color: white; /* White background for the search section */
+  border-radius: 5px; /* Rounded corners for the container */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+/* Styling for the search input field */
+.search-bar {
+  flex-grow: 1; /* Make the input take up the remaining space */
+  padding: 10px; /* Space inside the input */
+  font-size: 16px; /* Set font size */
+  border: 1px solid #ccc; /* Light border */
+  border-radius: 5px 0 0 5px; /* Rounded left corners */
+  outline: none; /* Remove outline when focused */
+}
+
+/* Styling for the search button */
+.search-button {
+  padding: 10px 20px; /* Space inside the button */
+  background-color: #007bff; /* Blue background */
+  color: white; /* White text */
+  border: 1px solid #007bff; /* Border to match the background */
+  border-radius: 0 5px 5px 0; /* Rounded right corners */
+  cursor: pointer; /* Pointer cursor when hovered */
+  font-size: 16px; /* Set font size */
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+/* Hover effect for the search button */
+.search-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  border-color: #0056b3; /* Darker border on hover */
+}
+
+/* Styling for the suggestions list */
+.suggestions {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0;
+  margin-top: 10px; /* Space above the suggestions list */
+  width: 100%; /* Full width of the container */
+  max-height: 200px; /* Limit height of suggestions */
+  overflow-y: auto; /* Enable scrolling if necessary */
+  border: 1px solid #ccc; /* Border for suggestions */
+  border-radius: 5px; /* Rounded corners for suggestions */
+  background-color: white; /* White background for suggestions */
+}
+
+/* Styling for individual list items in suggestions */
 .suggestions li {
-  padding: 10px;
-  cursor: pointer;
+  padding: 10px; /* Add padding inside each suggestion */
+  cursor: pointer; /* Pointer cursor on hover */
 }
 
+/* Highlight a suggestion on hover */
 .suggestions li:hover {
-  background-color: #f1f1f1;
+  background-color: #f0f0f0; /* Change background on hover */
 }
 
-.result-container {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Styling for the user data display */
+div *ngIf="response" {
+  margin-top: 20px; /* Add space above the user info section */
+  padding: 20px; /* Add padding inside the section */
+  background-color: white; /* White background */
+  border-radius: 5px; /* Rounded corners for the section */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  max-width: 600px; /* Limit the width of the section */
+  margin: 20px auto; /* Center the section horizontally */
+}
+
+/* Styling for the user name, id, repos, and avatar */
+div *ngIf="response" p {
+  font-size: 18px; /* Set font size for user info */
+  color: #333; /* Set text color */
+  margin-bottom: 10px; /* Add space between paragraphs */
+}
+
+div *ngIf="response" img {
+  display: block; /* Make the image a block element */
+  margin-top: 10px; /* Add space above the image */
+  border-radius: 50%; /* Make the image circular */
+  border: 2px solid #007bff; /* Border around the avatar */
 }
