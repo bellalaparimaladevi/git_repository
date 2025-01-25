@@ -1,60 +1,36 @@
-import { Component } from '@angular/core';
-import { YourService } from '../services/your.service'; // Replace with your actual service file path
+.search-container {
+  max-width: 500px;
+  margin: auto;
+  position: relative;
+}
 
-@Component({
-  selector: 'app-view',
-  templateUrl: './view.component.html',
-  styleUrls: ['./view.component.css']
-})
-export class ViewComponent {
-  userName: string = '';
-  response: any = null;
-  recentSearches: string[] = [];
-  filteredSearches: string[] = [];
-  showSuggestions: boolean = false;
+input[type='text'] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-  constructor(private yourService: YourService) {}
+.suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
 
-  search() {
-    if (!this.userName.trim()) {
-      alert('Please enter a valid username!');
-      return;
-    }
+.suggestions li {
+  padding: 10px;
+  cursor: pointer;
+}
 
-    this.yourService.getUserDetails(this.userName).subscribe(
-      (data) => {
-        this.response = data;
-
-        // Add the search term to the recent searches if it's valid
-        if (!this.recentSearches.includes(this.userName)) {
-          this.recentSearches.unshift(this.userName);
-          if (this.recentSearches.length > 5) {
-            this.recentSearches.pop(); // Keep only the last 5 searches
-          }
-        }
-
-        this.filteredSearches = [...this.recentSearches];
-      },
-      (error) => {
-        alert('User not found or an error occurred!');
-        this.response = null; // Clear the previous response if there's an error
-      }
-    );
-  }
-
-  updateRecentSearches() {
-    this.filteredSearches = this.recentSearches.filter((search) =>
-      search.toLowerCase().includes(this.userName.toLowerCase())
-    );
-  }
-
-  selectRecentSearch(search: string) {
-    this.userName = search;
-    this.showSuggestions = false;
-    this.search(); // Automatically search when selecting a recent search
-  }
-
-  hideSuggestions() {
-    setTimeout(() => (this.showSuggestions = false), 100); // Delay to allow click on suggestion
-  }
+.suggestions li:hover {
+  background-color: #f0f0f0;
 }
