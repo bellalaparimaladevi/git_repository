@@ -1,128 +1,78 @@
-/* Global Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Body Styling */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+/* Center the entire search-container */
+.search-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 20px;
+  margin: 20px auto;
+  width: 50%; /* Adjust the width for better alignment */
 }
 
-/* Heading Styling */
-h1 {
-  font-size: 24px;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Search Container */
-.search-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  max-width: 600px;
-  width: 100%;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  position: relative;
-}
-
-/* Search Input */
+/* Style the search bar */
 .search-bar {
-  flex-grow: 1;
+  width: 100%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-  outline: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-/* Search Button */
+/* Style the search button */
 .search-button {
   padding: 10px 20px;
   background-color: #007bff;
-  color: white;
-  border: 1px solid #007bff;
-  border-radius: 0 5px 5px 0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-/* Search Button Hover Effect */
 .search-button:hover {
   background-color: #0056b3;
-  border-color: #0056b3;
 }
 
-/* Suggestions List */
+/* Style the suggestions dropdown */
 .suggestions {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
-  margin-top: 10px;
+  margin: 0;
   width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: white;
-  position: absolute;
-  top: 50px;  /* Adjust position of suggestions */
-  left: 0;
-  z-index: 10;
+  border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: #fff;
 }
 
-/* Suggestions Item Styling */
 .suggestions li {
   padding: 10px;
   cursor: pointer;
-  background-color: #fff;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease;
 }
 
-/* Suggestions Item Hover Effect */
 .suggestions li:hover {
   background-color: #f0f0f0;
 }
 
-/* User Info Section */
+/* Center the response container */
 .response-container {
-  margin-top: 20px;
+  margin: 20px auto;
+  text-align: center; /* Align text and content inside the container */
+  width: 50%; /* Adjust the width for alignment */
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
   padding: 20px;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the title */
+h1 {
   text-align: center;
-}
-
-/* User Info Paragraph Styling */
-.response-container p {
-  font-size: 18px;
   color: #333;
-  margin-bottom: 10px;
-}
-
-/* User Avatar Image Styling */
-.response-container img {
-  display: block;
-  margin-top: 10px;
-  border-radius: 50%;
-  border: 2px solid #007bff;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+  margin-bottom: 20px;
 }
