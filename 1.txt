@@ -1,29 +1,77 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HomeComponent } from './home.component';
 
-@Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
-})
-export class HomeComponent implements OnInit {
-  userForm: FormGroup;
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
 
-  constructor(private fb: FormBuilder) {
-    this.userForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [HomeComponent],
+      imports: [ReactiveFormsModule],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HomeComponent);
+    component = fixture.componentInstance;
+
+    fixture.detectChanges();
+  });
+
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should initialize the form with empty values', () => {
+    expect(component.userForm.value).toEqual({
+      username: '',
+      email: '',
+      password: '',
     });
-  }
+    expect(component.userForm.valid).toBeFalse();
+  });
 
-  ngOnInit(): void {}
+  it('should validate the form as invalid when empty', () => {
+    expect(component.userForm.invalid).toBeTrue();
+  });
 
-  onSubmit(): void {
-    if (this.userForm.valid) {
-      console.log(this.userForm.value); // Log form data
-    } else {
-      console.error('Form is invalid');
-    }
-  }
-}
+  it('should validate the form as valid when filled with valid data', () => {
+    component.userForm.patchValue({
+      username: 'testuser',
+      email: 'testuser@example.com',
+      password: 'password123',
+    });
+
+    expect(component.userForm.valid).toBeTrue();
+  });
+
+  it('should log form data on submit when the form is valid', () => {
+    spyOn(console, 'log');
+    component.userForm.patchValue({
+      username: 'testuser',
+      email: 'testuser@example.com',
+      password: 'password123',
+    });
+
+    component.onSubmit();
+
+    expect(console.log).toHaveBeenCalledWith({
+      username: 'testuser',
+      email: 'testuser@example.com',
+      password: 'password123',
+    });
+  });
+
+  it('should not log anything if the form is invalid on submit', () => {
+    spyOn(console, 'log');
+    component.userForm.patchValue({
+      username: '',
+      email: '',
+      password: '',
+    });
+
+    component.onSubmit();
+
+    expect(console.log).not.toHaveBeenCalled();
+  });
+});
