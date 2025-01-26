@@ -1,53 +1,29 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { of } from 'rxjs';
-import { ViewComponent } from './view.component';
-import { AppService } from '../app.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-describe('ViewComponent', () => {
-  let component: ViewComponent;
-  let fixture: ComponentFixture<ViewComponent>;
-  let appServiceMock: any;
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+  userForm: FormGroup;
 
-  beforeEach(async () => {
-    appServiceMock = {
-      getGitHubUser: jasmine.createSpy('getGitHubUser').and.returnValue(
-        of({
-          login: 'johnDoe',
-          id: 123,
-          public_repos: 10,
-          avatar_url: 'http://example.com/avatar.jpg',
-        })
-      ),
-    };
-
-    await TestBed.configureTestingModule({
-      declarations: [ViewComponent],
-      imports: [FormsModule],
-      providers: [{ provide: AppService, useValue: appServiceMock }],
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ViewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should call service and fetch user data on search', () => {
-    component.userName = 'johnDoe';
-    component.search();
-
-    expect(appServiceMock.getGitHubUser).toHaveBeenCalledWith('johnDoe');
-    expect(component.response).toEqual({
-      login: 'johnDoe',
-      id: 123,
-      public_repos: 10,
-      avatar_url: 'http://example.com/avatar.jpg',
+  constructor(private fb: FormBuilder) {
+    this.userForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
-  });
-});
+  }
+
+  ngOnInit(): void {}
+
+  onSubmit(): void {
+    if (this.userForm.valid) {
+      console.log(this.userForm.value); // Log form data
+    } else {
+      console.error('Form is invalid');
+    }
+  }
+}
