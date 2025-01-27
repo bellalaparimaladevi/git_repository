@@ -1,68 +1,28 @@
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+<div class="search-container">
+  <h1>{{ message }}</h1>
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import yg.bootcamp.demo.userregistration.UserRegistration;
-import yg.bootcamp.demo.userregistration.UserRegistrationService;
+  <div class="search-bar-container">
+    <input
+      type="text"
+      [(ngModel)]="userName"
+      (focus)="showSuggestions=true"
+      (blur)="hideSuggestions()"
+      placeholder="Search GitHub users"
+      class="search-bar"
+    />
+    <button (click)="search()" class="search-button">Search</button>
+  </div>
 
-import java.util.List;
-import java.util.Optional;
+  <ul *ngIf="showSuggestions && recentSearches.length" class="suggestions">
+    <li *ngFor="let search of filteredSearches" (mousedown)="selectRecentSearch(search)">
+      {{ search }}
+    </li>
+  </ul>
+</div>
 
-class UserRegistrationControllerTest {
-
-    @Mock
-    private UserRegistrationService service;
-
-    @InjectMocks
-    private UserRegistrationController controller;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void testGetAllUsersRegistered() {
-        // Given
-        List<UserRegistration> userRegistrationList = List.of(new UserRegistration(), new UserRegistration());
-        when(service.getAllUsersRegistered()).thenReturn(userRegistrationList);
-
-        // When
-        Iterable<UserRegistration> result = controller.getAllUsersRegistered();
-
-        // Then
-        assertEquals(userRegistrationList, result);
-        verify(service).getAllUsersRegistered();
-    }
-
-    @Test
-    void testAddNewUserRegistered() {
-        // Given
-        UserRegistration userRegistration = new UserRegistration();
-
-        // When
-        controller.addNewUserRegistered(userRegistration);
-
-        // Then
-        verify(service).addNewUsersRegistered(userRegistration);
-    }
-
-    @Test
-    void testGetUserRegisteredByEmail() {
-        // Given
-        UserRegistration userRegistration = new UserRegistration();
-        when(service.getUserRegisteredByEmail("test@example.com")).thenReturn(Optional.of(userRegistration));
-
-        // When
-        Optional<UserRegistration> result = controller.getUserRegisteredByEmail("test@example.com");
-
-        // Then
-        assertTrue(result.isPresent());
-        assertEquals(userRegistration, result.get());
-        verify(service).getUserRegisteredByEmail("test@example.com");
-    }
-}
+<div *ngIf="response" class="response-container">
+  <p>User Name: {{ response.login }}</p>
+  <p>Login Id: {{ response.id }}</p>
+  <p>Repos: {{ response.public_repos }}</p>
+  <img [src]="response.avatar_url" alt="User Avatar" width="150" />
+</div>
