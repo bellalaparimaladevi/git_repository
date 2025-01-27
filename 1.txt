@@ -1,77 +1,71 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HomeComponent } from './home.component';
+import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { GithubService } from '../github.service';
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+@Component({
+  selector: 'view-component',
+  templateUrl: './view.component.html',
+  styleUrls: ['./view.component.scss'],
+  providers: [GithubService],
+})
+export class ViewComponent implements OnInit, OnChanges {
+  @Input() userName: string = ''; // Accept userName as an input property
+  message: string = 'Welcome to GitHub user search!';
+  response: any = null;
+  recentSearches: string[] = [];
+  filteredSearches: string[] = [];
+  showSuggestions: boolean = false;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [HomeComponent],
-      imports: [ReactiveFormsModule],
-    }).compileComponents();
+  constructor(private githubService: GithubService) {}
 
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
+  ngOnInit(): void {
+    console.log('ViewComponent initialized.');
+  }
 
-    fixture.detectChanges();
-  });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userName'] && this.userName.trim()) {
+      this.updateRecentSearches();
+    }
+  }
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
+  search(): void {
+    if (!this.userName.trim()) {
+      alert('Please enter a valid username!');
+      return;
+    }
 
-  it('should initialize the form with empty values', () => {
-    expect(component.userForm.value).toEqual({
-      username: '',
-      email: '',
-      password: '',
-    });
-    expect(component.userForm.valid).toBeFalse();
-  });
+    this.githubService.getUser(this.userName).subscribe(
+      (data: any) => {
+        this.response = data;
 
-  it('should validate the form as invalid when empty', () => {
-    expect(component.userForm.invalid).toBeTrue();
-  });
+        if (!this.recentSearches.includes(this.userName)) {
+          this.recentSearches.push(this.userName);
+        }
 
-  it('should validate the form as valid when filled with valid data', () => {
-    component.userForm.patchValue({
-      username: 'testuser',
-      email: 'testuser@example.com',
-      password: 'password123',
-    });
+        if (this.recentSearches.length > 5) {
+          this.recentSearches.shift();
+        }
+      },
+      (error: any) => {
+        alert('User not found or an error occurred!');
+        this.response = null;
+      }
+    );
+  }
 
-    expect(component.userForm.valid).toBeTrue();
-  });
+  updateRecentSearches(): void {
+    this.filteredSearches = this.recentSearches.filter((search) =>
+      search.toLowerCase().includes(this.userName.toLowerCase())
+    );
+  }
 
-  it('should log form data on submit when the form is valid', () => {
-    spyOn(console, 'log');
-    component.userForm.patchValue({
-      username: 'testuser',
-      email: 'testuser@example.com',
-      password: 'password123',
-    });
+  selectRecentSearch(search: string): void {
+    console.log('Recent search selected:', search);
+    this.userName = search;
+    this.showSuggestions = false;
+    this.search();
+  }
 
-    component.onSubmit();
-
-    expect(console.log).toHaveBeenCalledWith({
-      username: 'testuser',
-      email: 'testuser@example.com',
-      password: 'password123',
-    });
-  });
-
-  it('should not log anything if the form is invalid on submit', () => {
-    spyOn(console, 'log');
-    component.userForm.patchValue({
-      username: '',
-      email: '',
-      password: '',
-    });
-
-    component.onSubmit();
-
-    expect(console.log).not.toHaveBeenCalled();
-  });
-});
+  hideSuggestions(): void {
+    setTimeout(() => (this.showSuggestions = false), 100);
+  }
+}
