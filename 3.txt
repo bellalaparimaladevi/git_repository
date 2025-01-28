@@ -1,93 +1,30 @@
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+<div class="search-container">
+  <h1>{{ message }}</h1>
+  <div class="search-bar-container">
+    <input
+      type="text"
+      [(ngModel)]="userName"
+      (input)="updateRecentSearches()"
+      (focus)="showSuggestions = true"
+      (blur)="hideSuggestions()"
+      placeholder="Search GitHub users"
+      class="search-bar"
+    />
+    <button (click)="search()" class="search-button">Search</button>
+  </div>
+  <ul *ngIf="showSuggestions && recentSearches.length" class="suggestions">
+    <li
+      *ngFor="let search of filteredSearches"
+      (mousedown)="selectRecentSearch(search)"
+    >
+      {{ search }}
+    </li>
+  </ul>
+</div>
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
-import yg.bootcamp.demo.jobdetails.JobDetails;
-import yg.bootcamp.demo.jobdetails.JobDetailsService;
-
-import java.util.List;
-import java.util.Optional;
-
-class JobDetailsControllerTest {
-
-    @Mock
-    private JobDetailsService service;
-
-    @InjectMocks
-    private JobDetailsController controller;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void testGetAllJobDetails() {
-        // Given
-        List<JobDetails> jobDetailsList = List.of(new JobDetails(), new JobDetails());
-        when(service.getAllJobDetails()).thenReturn(jobDetailsList);
-
-        // When
-        Iterable<JobDetails> result = controller.getAllJobDetails();
-
-        // Then
-        assertEquals(jobDetailsList, result);
-        verify(service).getAllJobDetails();
-    }
-
-    @Test
-    void testAddNewJobDetail() {
-        // Given
-        JobDetails jobDetails = new JobDetails();
-
-        // When
-        controller.addNewJobDetail(jobDetails);
-
-        // Then
-        verify(service).addNewJobDetail(jobDetails);
-    }
-
-    @Test
-    void testDeleteJobDetailsById() {
-        // Given
-        Integer jobId = 1;
-
-        // When
-        controller.deleteJobDetailsById(jobId);
-
-        // Then
-        verify(service).deleteJobDetailsById(jobId);
-    }
-
-    @Test
-    void testGetJobDetailsByJobType() {
-        // Given
-        String jobType = "Developer";
-        List<JobDetails> jobDetailsList = List.of(new JobDetails(), new JobDetails());
-        when(service.getJobDetailsByJobType(jobType)).thenReturn(jobDetailsList);
-
-        // When
-        List<JobDetails> result = controller.getJobDetailsByJobType(jobType);
-
-        // Then
-        assertEquals(jobDetailsList, result);
-        verify(service).getJobDetailsByJobType(jobType);
-    }
-
-    @Test
-    void testGetJobDetailsByJobRole() {
-        // Given
-        String jobRole = "Backend Developer";
-        List<JobDetails> jobDetailsList = List.of(new JobDetails(), new JobDetails());
-        when(service.getJobDetailsByJobRole(jobRole)).thenReturn(jobDetailsList);
-
-        // When
-        List<JobDetails> result = controller.getJobDetailsByJobRole(jobRole);
-
-        // Then
-        assertEquals(jobDetailsList, result);
+<div *ngIf="response" class="response-container">
+  <p>User Name: {{ response.login }}</p>
+  <p>Login Id: {{ response.id }}</p>
+  <p>Repos: {{ response.public_repos }}</p>
+  <img [src]="response.avatar_url" alt="User Avatar" width="150" />
+</div>
