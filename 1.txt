@@ -1,71 +1,23 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
-import { GithubService } from '../github.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
-@Component({
-  selector: 'view-component',
-  templateUrl: './view.component.html',
-  styleUrls: ['./view.component.scss'],
-  providers: [GithubService],
+@Injectable({
+  providedIn: 'root',
 })
-export class ViewComponent implements OnInit, OnChanges {
-  @Input() userName: string = ''; // Accept userName as an input property
-  message: string = 'Welcome to GitHub user search!';
-  response: any = null;
-  recentSearches: string[] = [];
-  filteredSearches: string[] = [];
-  showSuggestions: boolean = false;
+export class GithubService {
+  private searchTermSubject = new BehaviorSubject<string>(''); // Initialize with an empty string
+  searchTerm$ = this.searchTermSubject.asObservable(); // Expose as Observable
 
-  constructor(private githubService: GithubService) {}
+  constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    console.log('ViewComponent initialized.');
+  // Update the search term
+  setSearchTerm(term: string) {
+    this.searchTermSubject.next(term); // Emit the new term
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['userName'] && this.userName.trim()) {
-      this.updateRecentSearches();
-    }
-  }
-
-  search(): void {
-    if (!this.userName.trim()) {
-      alert('Please enter a valid username!');
-      return;
-    }
-
-    this.githubService.getUser(this.userName).subscribe(
-      (data: any) => {
-        this.response = data;
-
-        if (!this.recentSearches.includes(this.userName)) {
-          this.recentSearches.push(this.userName);
-        }
-
-        if (this.recentSearches.length > 5) {
-          this.recentSearches.shift();
-        }
-      },
-      (error: any) => {
-        alert('User not found or an error occurred!');
-        this.response = null;
-      }
-    );
-  }
-
-  updateRecentSearches(): void {
-    this.filteredSearches = this.recentSearches.filter((search) =>
-      search.toLowerCase().includes(this.userName.toLowerCase())
-    );
-  }
-
-  selectRecentSearch(search: string): void {
-    console.log('Recent search selected:', search);
-    this.userName = search;
-    this.showSuggestions = false;
-    this.search();
-  }
-
-  hideSuggestions(): void {
-    setTimeout(() => (this.showSuggestions = false), 100);
+  // Fetch user data from GitHub API
+  getUser(username: string): Observable<any> {
+    return this.http.get(`https://api.github.com/users/${username}`);
   }
 }
