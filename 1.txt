@@ -1,23 +1,23 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { GithubService } from '../github.service';
 
-@Injectable({
-  providedIn: 'root',
+@Component({
+  selector: 'app-search-history',
+  template: `
+    <h2>Recent Search Term:</h2>
+    <p>{{ currentSearch }}</p>
+  `,
+  styleUrls: ['./search-history.component.scss']
 })
-export class GithubService {
-  private searchTermSubject = new BehaviorSubject<string>(''); // Initialize with an empty string
-  searchTerm$ = this.searchTermSubject.asObservable(); // Expose as Observable
+export class SearchHistoryComponent implements OnInit {
+  currentSearch: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private githubService: GithubService) {}
 
-  // Update the search term
-  setSearchTerm(term: string) {
-    this.searchTermSubject.next(term); // Emit the new term
-  }
-
-  // Fetch user data from GitHub API
-  getUser(username: string): Observable<any> {
-    return this.http.get(`https://api.github.com/users/${username}`);
+  ngOnInit() {
+    // Subscribe to the BehaviorSubject in the service
+    this.githubService.searchTerm$.subscribe((term) => {
+      this.currentSearch = term; // Update the current search term
+    });
   }
 }
