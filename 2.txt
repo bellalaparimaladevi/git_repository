@@ -1,28 +1,81 @@
-<div class="search-container">
-  <h1>{{ message }}</h1>
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { GithubService } from '../github.service';
+import { Subscription } from 'rxjs';
 
-  <div class="search-bar-container">
-    <input
-      type="text"
-      [(ngModel)]="userName"
-      (focus)="showSuggestions=true"
-      (blur)="hideSuggestions()"
-      placeholder="Search GitHub users"
-      class="search-bar"
-    />
-    <button (click)="search()" class="search-button">Search</button>
-  </div>
+@Component({
+  selector: 'app-view',
+  templateUrl: './view.component.html',
+  styleUrls: ['./view.component.scss'],
+})
+export class ViewComponent implements OnInit, OnDestroy {
+  message = 'Welcome to GitHub User Search!';
+  userName: string = '';
+  response: any = null;
+  recentSearches: string[] = [];
+  filteredSearches: string[] = [];
+  showSuggestions: boolean = false;
 
-  <ul *ngIf="showSuggestions && recentSearches.length" class="suggestions">
-    <li *ngFor="let search of filteredSearches" (mousedown)="selectRecentSearch(search)">
-      {{ search }}
-    </li>
-  </ul>
-</div>
+  private subscription: Subscription = new Subscription();
 
-<div *ngIf="response" class="response-container">
-  <p>User Name: {{ response.login }}</p>
-  <p>Login Id: {{ response.id }}</p>
-  <p>Repos: {{ response.public_repos }}</p>
-  <img [src]="response.avatar_url" alt="User Avatar" width="150" />
-</div>
+  constructor(private githubService: GithubService) {}
+
+  ngOnInit(): void {
+    // Subscribe to the search term from the service
+    this.subscription.add(
+      this.githubService.searchTerm$.subscribe((term) => {
+        this.userName = term; // Automatically update userName when the search term changes
+        this.updateRecentSearches(); // Update filtered suggestions
+      })
+    );
+  }
+
+  search() {
+    if (!this.userName.trim()) {
+      alert('Please enter a valid username!');
+      return;
+    }
+
+    this.githubService.getUser(this.userName).subscribe(
+      (data: any) => {
+        this.response = data;
+
+        // Add to recent searches if not already present
+        if (!this.recentSearches.includes(this.userName)) {
+          this.recentSearches.unshift(this.userName);
+        }
+
+        // Limit recent searches to 5
+        if (this.recentSearches.length > 5) {
+          this.recentSearches.pop();
+        }
+
+        // Update the search term in the service
+        this.githubService.setSearchTerm(this.userName);
+      },
+      (error) => {
+        alert('User not found or an error occurred!');
+        this.response = null;
+      }
+    );
+  }
+
+  updateRecentSearches() {
+    this.filteredSearches = this.recentSearches.filter((search) =>
+      search.toLowerCase().includes(this.userName.toLowerCase())
+    );
+  }
+
+  selectRecentSearch(search: string) {
+    this.githubService.setSearchTerm(search); // Set the selected search term
+    this.search(); // Perform the search
+    this.showSuggestions = false;
+  }
+
+  hideSuggestions() {
+    setTimeout(() => (this.showSuggestions = false), 100);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe(); // Clean up subscriptions
+  }
+}
