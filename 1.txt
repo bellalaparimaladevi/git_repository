@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { GithubService } from '../github.service';
+import { of } from 'rxjs';
+import { delay, mergeMap } from 'rxjs/operators';
 
-@Component({
-  selector: 'app-search-history',
-  template: `
-    <h2>Recent Search Term:</h2>
-    <p>{{ currentSearch }}</p>
-  `,
-  styleUrls: ['./search-history.component.scss']
-})
-export class SearchHistoryComponent implements OnInit {
-  currentSearch: string = '';
+const delayedObservable1 = of('First').pipe(delay(1000));  // Delayed by 1 second
+const delayedObservable2 = of('Second').pipe(delay(500));  // Delayed by 0.5 seconds
+const delayedObservable3 = of('Third').pipe(delay(1500));  // Delayed by 1.5 seconds
 
-  constructor(private githubService: GithubService) {}
-
-  ngOnInit() {
-    // Subscribe to the BehaviorSubject in the service
-    this.githubService.searchTerm$.subscribe((term) => {
-      this.currentSearch = term; // Update the current search term
-    });
-  }
-}
+delayedObservable1.pipe(
+  mergeMap(value1 => {
+    console.log(`Received from delayedObservable1: ${value1}`);
+    return delayedObservable2.pipe(
+      mergeMap(value2 => {
+        console.log(`Received from delayedObservable2: ${value2}`);
+        return delayedObservable3.pipe(
+          mergeMap(value3 => {
+            console.log(`Received from delayedObservable3: ${value3}`);
+            return of(`${value1} - ${value2} - ${value3}`);
+          })
+        );
+      })
+    );
+  })
+).subscribe(finalResult => {
+  console.log(`Final merged result: ${finalResult}`);
+});
