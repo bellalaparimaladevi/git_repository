@@ -1,25 +1,44 @@
+import { Component } from '@angular/core';
 import { of } from 'rxjs';
 import { delay, mergeMap } from 'rxjs/operators';
 
-const delayedObservable1 = of('First').pipe(delay(1000));  // Delayed by 1 second
-const delayedObservable2 = of('Second').pipe(delay(500));  // Delayed by 0.5 seconds
-const delayedObservable3 = of('Third').pipe(delay(1500));  // Delayed by 1.5 seconds
+@Component({
+  selector: 'app-parent',
+  templateUrl: './parent.component.html',
+  styleUrls: ['./parent.component.scss']
+})
+export class ParentComponent {
 
-delayedObservable1.pipe(
-  mergeMap(value1 => {
-    console.log(`Received from delayedObservable1: ${value1}`);
-    return delayedObservable2.pipe(
-      mergeMap(value2 => {
-        console.log(`Received from delayedObservable2: ${value2}`);
-        return delayedObservable3.pipe(
-          mergeMap(value3 => {
-            console.log(`Received from delayedObservable3: ${value3}`);
-            return of(`${value1} - ${value2} - ${value3}`);
+  parentData: string = '';
+  dataForChild: string = '';
+
+  sendDataToChild() {
+    this.dataForChild = this.parentData;
+  }
+
+  // Example: Simulating Delayed Streams with mergeMap
+  delayedStreams() {
+    const delayedObservable1 = of('First').pipe(delay(1000));  // 1 second delay
+    const delayedObservable2 = of('Second').pipe(delay(500));  // 0.5 seconds delay
+    const delayedObservable3 = of('Third').pipe(delay(1500));  // 1.5 seconds delay
+
+    delayedObservable1.pipe(
+      mergeMap(value1 => {
+        console.log(`Received from delayedObservable1: ${value1}`);
+        return delayedObservable2.pipe(
+          mergeMap(value2 => {
+            console.log(`Received from delayedObservable2: ${value2}`);
+            return delayedObservable3.pipe(
+              mergeMap(value3 => {
+                console.log(`Received from delayedObservable3: ${value3}`);
+                return of(`${value1} - ${value2} - ${value3}`);
+              })
+            );
           })
         );
       })
-    );
-  })
-).subscribe(finalResult => {
-  console.log(`Final merged result: ${finalResult}`);
-});
+    ).subscribe(finalResult => {
+      console.log(`Final merged result: ${finalResult}`);
+    });
+  }
+}
