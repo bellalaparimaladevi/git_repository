@@ -1,44 +1,29 @@
-import { Component } from '@angular/core';
-import { of } from 'rxjs';
-import { delay, mergeMap } from 'rxjs/operators';
+<div class="buttons">
+  <button (click)="fetchUsersFirstThenReposConcatMap()">Fetch Users then Repos with concatMap</button>
+  <button (click)="fetchReposFirstThenUsersConcatMap()">Fetch Repos then Users with concatMap</button>
+  <button (click)="fetchUsersForkJoin()">Fork join failure</button>
+  <button (click)="fetchUsersReposForkJoin()">Fetch users and repos with forkJoin</button>
+</div>
 
-@Component({
-  selector: 'app-parent',
-  templateUrl: './parent.component.html',
-  styleUrls: ['./parent.component.scss']
-})
-export class ParentComponent {
-
-  parentData: string = '';
-  dataForChild: string = '';
-
-  sendDataToChild() {
-    this.dataForChild = this.parentData;
+<div class="response">
+  @for (response of responses; track $index) {
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of response.data; track $index) {
+            <tr>
+              <td>{{ item.type }}</td>
+              <td>{{ item.data | json }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   }
-
-  // Example: Simulating Delayed Streams with mergeMap
-  delayedStreams() {
-    const delayedObservable1 = of('First').pipe(delay(1000));  // 1 second delay
-    const delayedObservable2 = of('Second').pipe(delay(500));  // 0.5 seconds delay
-    const delayedObservable3 = of('Third').pipe(delay(1500));  // 1.5 seconds delay
-
-    delayedObservable1.pipe(
-      mergeMap(value1 => {
-        console.log(`Received from delayedObservable1: ${value1}`);
-        return delayedObservable2.pipe(
-          mergeMap(value2 => {
-            console.log(`Received from delayedObservable2: ${value2}`);
-            return delayedObservable3.pipe(
-              mergeMap(value3 => {
-                console.log(`Received from delayedObservable3: ${value3}`);
-                return of(`${value1} - ${value2} - ${value3}`);
-              })
-            );
-          })
-        );
-      })
-    ).subscribe(finalResult => {
-      console.log(`Final merged result: ${finalResult}`);
-    });
-  }
-}
+</div>
