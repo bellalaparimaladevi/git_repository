@@ -1,31 +1,6 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-
-@Injectable({
-  providedIn: 'root',
-})
-export class GithubService {
-  private searchTermSubject = new BehaviorSubject<string>(''); // BehaviorSubject to share search term
-  searchTerm$ = this.searchTermSubject.asObservable(); // Expose it as an observable
-
-  private API_URL = 'https://api.github.com/users'; // Base API URL
-
-  constructor(private http: HttpClient) {}
-
-  // Update the search term
-  setSearchTerm(term: string) {
-    this.searchTermSubject.next(term); // Emit the new search term
-  }
-
-  // Get user data (return full response)
-  getUser(userName: string): Observable<any> {
-    return this.http.get<any>(`${this.API_URL}/${userName}`).pipe(
-      map((data) => {
-        // Return the entire response object
-        return data;
-      })
-    );
-  }
-}
+const routes: Routes = [
+  { path: '', component: HomeComponent }, // Default route
+  { path: 'about', component: AboutComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: '**', redirectTo: '' } // Wildcard route for a 404 page
+];
