@@ -1,6 +1,27 @@
-const routes: Routes = [
-  { path: '', component: HomeComponent }, // Default route
-  { path: 'about', component: AboutComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: '**', redirectTo: '' } // Wildcard route for a 404 page
-];
+<div class="search-container">
+  <h1>{{ message }}</h1>
+  <div class="search-bar-container">
+    <input 
+      type="text" 
+      [(ngModel)]="userName" 
+      (input)="updateRecentSearches()" 
+      (focus)="showSuggestions = true" 
+      (blur)="hideSuggestions()"
+      placeholder="Search GitHub users"
+      class="search-bar"
+    />
+    <button (click)="search()" class="search-button">Search</button>
+  </div>
+  <ul *ngIf="showSuggestions && recentSearches.length" class="suggestions">
+    <li *ngFor="let search of filteredSearches" (mousedown)="selectRecentSearch(search)">
+      {{ search }}
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="response" class="response-container">
+  <p>User Name: {{ response.login }}</p>
+  <p>Login Id: {{ response.id }}</p>
+  <p>Repos: {{ response.public_repos }}</p>
+  <img [src]="response.avatar_url" alt="User Avatar" width="150" />
+</div>
