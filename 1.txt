@@ -1,29 +1,31 @@
-<div class="buttons">
-  <button (click)="fetchUsersFirstThenReposConcatMap()">Fetch Users then Repos with concatMap</button>
-  <button (click)="fetchReposFirstThenUsersConcatMap()">Fetch Repos then Users with concatMap</button>
-  <button (click)="fetchUsersForkJoin()">Fork join failure</button>
-  <button (click)="fetchUsersReposForkJoin()">Fetch users and repos with forkJoin</button>
-</div>
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-<div class="response">
-  @for (response of responses; track $index) {
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Data</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of response.data; track $index) {
-            <tr>
-              <td>{{ item.type }}</td>
-              <td>{{ item.data | json }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+@Injectable({
+  providedIn: 'root',
+})
+export class GithubService {
+  private searchTermSubject = new BehaviorSubject<string>(''); // BehaviorSubject to share search term
+  searchTerm$ = this.searchTermSubject.asObservable(); // Expose it as an observable
+
+  private API_URL = 'https://api.github.com/users'; // Base API URL
+
+  constructor(private http: HttpClient) {}
+
+  // Update the search term
+  setSearchTerm(term: string) {
+    this.searchTermSubject.next(term); // Emit the new search term
   }
-</div>
+
+  // Get user data (return full response)
+  getUser(userName: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/${userName}`).pipe(
+      map((data) => {
+        // Return the entire response object
+        return data;
+      })
+    );
+  }
+}
